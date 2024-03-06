@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "target": "es2017",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -20,9 +21,9 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "src/libs/mongodb.js",
-    "src/models/topic.js",
-    "src/pages/api/topics/route.js"
+    "src/libs/mongodb.ts",
+    "src/models/topic.ts",
+    "src/pages/api/topics/index.ts"
   ],
   "exclude": ["node_modules"]
 }
