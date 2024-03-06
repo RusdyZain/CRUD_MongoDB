@@ -2,10 +2,6 @@ import ConnectMongoDB from "@/libs/mongodb";
 import Topic from "@/models/topic";
 import type { NextApiRequest, NextApiResponse } from "next";
 
-type Params = {
-  id: string;
-};
-
 type ResponseData = {
   message: string;
   topic?: {
@@ -17,18 +13,22 @@ type ResponseData = {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse,
-  { params }: NextApiRequest & { params?: Params }
+  res: NextApiResponse
 ) {
   await ConnectMongoDB();
 
+  console.log("Received id:", req.query);
+
   if (req.method === "PUT") {
     try {
-      if (params?.id) {
-        const { id } = params;
+      if (req.query !== null) {
+        const { id } = req.query;
         const { newTitle: title, newDescription: description } = req.body;
 
-        await Topic.findByIdAndUpdate(id, { title, description });
+        const result = await Topic.findByIdAndUpdate(id, {
+          title,
+          description,
+        });
         res.status(200).json({ message: "Topic updated successfully" });
       } else {
         res.status(404).json({ message: "Not Found" });
