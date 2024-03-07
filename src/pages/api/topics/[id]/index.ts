@@ -17,27 +17,29 @@ export default async function handler(
 ) {
   await ConnectMongoDB();
 
-  console.log("Received id:", req.query);
-
-  if (req.method === "PUT") {
-    try {
-      if (req.query !== null) {
+  switch (req.method) {
+    case "PUT":
+      console.log("Received id:", req.query);
+      try {
         const { id } = req.query;
         const { newTitle: title, newDescription: description } = req.body;
 
-        const result = await Topic.findByIdAndUpdate(id, {
+        const updateTopic = await Topic.findByIdAndUpdate(id, {
           title,
           description,
         });
-        res.status(200).json({ message: "Topic updated successfully" });
-      } else {
-        res.status(404).json({ message: "Not Found" });
+        if (!updateTopic) {
+          res.status(404).json({ message: "Topic Not Found" });
+        }
+        res.status(200).json({ updateTopic });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Error updating topic" });
       }
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Error updating topic" });
-    }
-  } else {
-    res.status(500).json({ message: "Cannot updating topic" });
+    case "GET":
+      console.log("Received id:", req.query);
+      const { id } = req.query;
+      const topic = await Topic.find({ _id: id });
+      res.status(200).json({ topic });
   }
 }
